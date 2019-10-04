@@ -1,0 +1,182 @@
+Project- 
+	project_id,
+	name,dsc,
+	start_date,
+	end_date
+
+users
+	user_id,
+	name,
+	username
+	pass
+	role_id(fk)
+	
+
+Task
+	task_id,
+	task_name,
+	project_id,
+	project_name,
+	task_dsc,
+	start_date,
+	end_date,
+	created_by,
+	created_date,
+	status
+
+task_project
+	task_project_id
+	project_id
+	task_id
+
+user_task
+	user_task_id
+	user_id
+	task_id
+
+
+
+task_comments
+	task_comment_id
+	task_id, 
+	user_id, 
+	comment
+
+
+
+task_history - 
+	task_history_id
+	task_id
+	updated_by,
+	updated_date
+
+
+role
+	role_id
+	role_name
+
+	
+
+------------------------------------------------------------------------------
+create table Project(
+	id int primary key NOT NULL,
+	name varchar(50) not null,
+	description varchar(500) not null,
+	start_date date,
+	end_date date
+)
+
+create table Users(
+	id int primary key NOT NULL,
+	name varchar(70) not null,
+	username varchar(70) not null,
+	password varchar(50) not null,
+)
+
+create table Task(
+	id int primary key NOT NULL,
+	name varchar(70) not null,
+	project_id int foreign key references Project(id),
+	description varchar(1000) not null,
+	start_date date,
+	end_date date,
+	created_by int not null,
+	created_date date,
+	status int
+)
+
+
+create table Task_Project (
+	
+	id int primary key NOT NULL,
+	project_id int foreign key references Project(id),
+	task_id int foreign key references Task(id),
+)
+
+create table User_Task (
+	
+	id int primary key NOT NULL,
+	users_id int foreign key references Users(id),
+	task_id int foreign key references Task(id),
+)
+
+create table Task_Comments (
+	
+	id int primary key NOT NULL,
+	task_id int foreign key references Task(id),
+	users_id int foreign key references Users(id),
+	comment varchar(500) not null,
+)
+
+
+create table Task_History (
+	
+	id int primary key NOT NULL,
+	task_id int foreign key references Task(id),
+	updated_by int foreign key references Users(id),
+	updated_date date,
+)
+
+
+
+create table Roles (
+	
+	id int primary key NOT NULL,
+	name varchar(10) not null,
+)
+
+
+ALTER TABLE users
+ADD role_id int foreign key references Roles(id);
+
+---------------------------------------------------------------------
+
+use Task_Management;
+
+drop table task_project;
+
+
+ALTER TABLE Task
+ADD project_id int foreign key references Project(id);
+
+
+drop table user_task;
+
+drop table task_comments;
+
+ALTER TABLE Task
+ADD users_id int foreign key references Users(id);
+
+create table User_Project (
+	
+	id int primary key NOT NULL,
+	users_id int foreign key references Users(id),
+	project_id int foreign key references Project(id),
+)
+
+-----------------------------------------------------------------------------
+
+create table Statusi (
+	
+	id int primary key NOT NULL,
+	name varchar(20) not null,
+)
+
+ALTER TABLE Task
+DROP COLUMN [status];
+
+ALTER TABLE Task
+ADD status_id int foreign key references Statusi(id);
+
+INSERT INTO Statusi (id, name)
+VALUES (1, 'Draft');
+
+INSERT INTO Statusi (id, name)
+VALUES (2, 'In Progress');
+
+INSERT INTO Statusi (id, name)
+VALUES (3, 'Completed');
+
+INSERT INTO Statusi (id, name)
+VALUES (4, 'Canceled');
+
